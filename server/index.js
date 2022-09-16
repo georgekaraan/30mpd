@@ -1,7 +1,9 @@
 const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
-    cors = require('cors')
+    cors = require('cors'),
+    UserRoute = require('./routes/CourseRoute'),
+    CourseRoute = require('./routes/UserRoute')
 
 require('dotenv').config()
 
@@ -24,7 +26,7 @@ async function connecting() {
 }
 connecting()
 
-// app.use('/product', productRoute);
-// app.use('/category/', categoryRoute);
+// app.use('/user', UserRoute);
+// app.use('/course/', CourseRoute);
 
 app.listen(4050, () => console.log(`listening on port 4050`))
