@@ -1,7 +1,11 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema as _Schema, model } from 'mongoose';
+const Schema = _Schema;
 const coursesSchema = new Schema({
     name: {
+        type: String,
+        required: true
+    },
+    sub_title: {
         type: String,
         required: true
     },
@@ -10,14 +14,27 @@ const coursesSchema = new Schema({
         required: true,
         ref: 'users'
     },
-    color: {
-        type: String
-    },
     description: {
-        type: String
-    }
+        type: String,
+        required: true
+    },
+    thumbnail: String,
+    media: [
+        {
+            media_file: String,
+            text_fie: String,
+            day: Number,
+            title: String
+        }
+    ],
+    category: {
+        type: String,
+        required: true
+    },
+
+
 },
 
     { strictQuery: false })
 
-module.exports = mongoose.model('courses', coursesSchema);
+export default model('courses', coursesSchema);
