@@ -12,7 +12,11 @@ const coursesSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'Users'
+    },
+    upload_date: {
+        type: Date,
+        required: true
     },
     description: {
         type: String,
@@ -31,8 +35,15 @@ const coursesSchema = new Schema({
         type: String,
         required: true
     },
-
-
+    sub_category: [String],
+    difficulty: {
+        type: Number,
+        required: true
+    },
+    tags: [String],
+    rating: Number,
+    num_ratings: Number,
+    num_commitments: Number
 },
 
     { strictQuery: false })

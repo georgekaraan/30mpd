@@ -20,6 +20,7 @@ async function ipfsSaveFile(fileName) {
         },
     })
 
+    console.log(fileName);
     let data = readFileSync(fileName)
 
     let result = await client.add(data)

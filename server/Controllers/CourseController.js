@@ -1,5 +1,5 @@
-import Users from '../models/UserModel.js';
-import Courses from '../models/CourseModel.js';
+import Users from '../Models/UserModel.js';
+import Courses from '../Models/CourseModel.js';
 // const ipfs = require("../Services/ipfs.service")
 import ipfsSaveFile from "../Services/ipfsSaveFile.js";
 import { dirname } from 'path';
@@ -13,7 +13,7 @@ class CourseController {
 
     async read(req, res) {
         try {
-            const course = await Courses.find({})
+            const course = await Courses.find()
             console.log(course)
             res.send(course)
         }

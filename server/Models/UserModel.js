@@ -20,6 +20,9 @@ const usersSchema = new Schema({
     image: {
         type: String
     },
+    bio: {
+        type: String
+    },
     active_subscription: {
         type: Boolean,
         required: true
@@ -82,5 +85,3 @@ const usersSchema = new Schema({
     { strictQuery: false })
 
 export default model('users', usersSchema);
-
-// cjoabhus

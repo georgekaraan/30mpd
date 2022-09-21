@@ -6,8 +6,8 @@ import UserRoute from './Routes/UserRoute.js';
 import CourseRoute from './Routes/CourseRoute.js';
 // AdminJS = require('adminjs'),
 // AdminJSExpress = require('@adminjs/express'),
-import Users from './models/UserModel.js';
-import Courses from './models/CourseModel.js';
+import Users from './Models/UserModel.js';
+import Courses from './Models/CourseModel.js';
 import fileUpload from 'express-fileupload';
 
 
@@ -27,7 +27,9 @@ app.use(cors())
 // connecting to mongo and checking if DB is running
 async function connecting() {
     try {
+        // await connect(`mongodb+srv://geewizz:${process.env.PASSWORD}@30mpd.c6mwg3p.mongodb.net/30mpd?retryWrites=true&w=majority`)
         await connect(`mongodb+srv://geewizz:${process.env.PASSWORD}@30mpd.c6mwg3p.mongodb.net/30mpd?retryWrites=true&w=majority`)
+
 
         console.log('Connected to the DB')
     } catch (error) {

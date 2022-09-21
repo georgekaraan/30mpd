@@ -1,5 +1,5 @@
-import Users from '../models/UserModel.js';
-import Courses from '../models/CourseModel.js';
+import Users from '../Models/UserModel.js';
+import Courses from '../Models/CourseModel.js';
 
 class UserController {
 
