@@ -1,30 +1,39 @@
-import CourseView from './components/CourseView';
-import NavBar from './components/NavBar';
-import Splash from './components/Splash';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from './components/Home';
+import NavBar from './components/NavBar';
+import NavBarLearner from './components/NavBarLearner';
+import SignUp from './pages/SignUp';
 import LogIn from './components/LogIn';
+import Footer from './components/Footer';
+import Browse from './pages/Browse';
+import { useRecoilValue } from 'recoil'
+import { isLoggedIn } from './assets/utils/state'
+import DashboardL from "./components/DashboardL";
+// import { useColorMode, Button } from '@chakra-ui/react'
+
 
 
 function App() {
+
+  // const { colorMode, toggleColorMode } = useColorMode();
+
+  const logInState = useRecoilValue(isLoggedIn)
 
   return (
     <div>
       <Router>
 
-        <NavBar />
+        {/* <Button onClick={toggleColorMode}></Button> */}
+        {!logInState ? <NavBar /> : <NavBarLearner />}
+
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={!logInState ? <Home /> : <DashboardL />} />
           <Route path="/login" element={<LogIn />} />
-          {/* <Route path="/shop" element={<Shop products={productDB} />} />
-          <Route path="/corp" element={<Corporate />} />
-          <Route path="/custom" element={<Custom />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/cart" element={<Cart cartDB={cartDB} setCartDB={setCartDB} total={total.price} />} />
-          <Route path="/shop/:id/:title" element={<ProductPage products={productDB} setCartDB={setCartDB} cartDB={cartDB} />} /> */}
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/browse/:cat" element={<Browse />} />
         </Routes>
       </Router>
-      {/* <CourseView /> */}
+      <Footer />
     </div >
   )
 }

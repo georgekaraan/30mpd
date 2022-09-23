@@ -64,6 +64,18 @@ class CourseController {
         res.send(CID)
     }
 
+    async listCats(req, res) {
+        try {
+            const course = await Courses.find()
+            // course = course.map((el) => el["category"])
+            res.send(course.map((el) => el["category"]))
+        }
+        catch (e) {
+            res.send('how?')
+        }
+
+    }
+
 
 }
 

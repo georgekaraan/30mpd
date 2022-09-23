@@ -12,7 +12,7 @@ const coursesSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Users'
+        ref: 'users'
     },
     upload_date: {
         type: Date,

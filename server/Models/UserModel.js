@@ -24,8 +24,7 @@ const usersSchema = new Schema({
         type: String
     },
     active_subscription: {
-        type: Boolean,
-        required: true
+        type: Boolean
     },
     signup_date: {
         type: Date,

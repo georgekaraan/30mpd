@@ -4,15 +4,16 @@ import { set, connect } from 'mongoose';
 import cors from 'cors';
 import UserRoute from './Routes/UserRoute.js';
 import CourseRoute from './Routes/CourseRoute.js';
-// AdminJS = require('adminjs'),
-// AdminJSExpress = require('@adminjs/express'),
-import Users from './Models/UserModel.js';
-import Courses from './Models/CourseModel.js';
+import AdminJS from "adminjs";
+import AdminJSExpress from "@adminjs/express";
+import users from './Models/UserModel.js';
+import courses from './Models/CourseModel.js';
 import fileUpload from 'express-fileupload';
 
 
+import AdminJSMongoose from "@adminjs/mongoose";
+AdminJS.registerAdapter(AdminJSMongoose)
 
-// AdminJS.registerAdapter(require("@adminjs/mongoose"));
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -38,18 +39,18 @@ async function connecting() {
 }
 connecting()
 
-// const adminJS = new AdminJS({
-//     resources: [Courses, Users],
-//     rootPath: "/admin",
-// });
+const adminJS = new AdminJS({
+    resources: [courses, users],
+    rootPath: "/admin",
+});
 
 
-// const routerAdmin = AdminJSExpress.buildRouter(adminJS);
-// app.use(adminJS.options.rootPath, routerAdmin);
+const routerAdmin = AdminJSExpress.buildRouter(adminJS);
+app.use(adminJS.options.rootPath, routerAdmin);
 
 
 app.use(fileUpload());
 app.use('/user', UserRoute);
 app.use('/course', CourseRoute);
 
-app.listen(4060, () => console.log(`listening on port 4060`))
+app.listen(4080, () => console.log(`listening on port 4080`))

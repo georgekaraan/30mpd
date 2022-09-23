@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Heading, Text, Stack } from '@chakra-ui/react'
+import { Box, Heading, Stack } from '@chakra-ui/react'
 
 export default function Mission() {
     return (

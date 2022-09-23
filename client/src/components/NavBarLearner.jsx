@@ -1,36 +1,62 @@
-import React from 'react'
-import { Box, Spacer, Button, Flex, Heading, Text, Input, Menu, MenuItem, MenuGroup, MenuDivider, MenuButton, MenuList } from '@chakra-ui/react'
-import { Stack, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Textarea, useDisclosure } from '@chakra-ui/react'
+import { useState } from 'react'
+import { Box, Spacer, Button, Heading, Text, Input, Menu, MenuItem, MenuGroup, MenuDivider, MenuButton, MenuList } from '@chakra-ui/react'
+import { HStack, DrawerFooter } from '@chakra-ui/react'
+import { Stack, InputGroup, InputLeftElement, useDisclosure } from '@chakra-ui/react'
 import {
     Drawer,
     DrawerBody,
-    DrawerFooter,
     DrawerHeader,
     DrawerOverlay,
     DrawerContent,
-    DrawerCloseButton,
+    Center
 } from '@chakra-ui/react'
-
 import { Link } from '@chakra-ui/react'
+import { Link as RouteLink } from 'react-router-dom'
+import { BsSearch } from "react-icons/bs";
 
-import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect } from 'react'
 
 
 
-export default function Banner() {
 
+
+
+export default function NavBar() {
+
+
+    const [cats, setCats] = useState([])
+
+    useEffect(() => {
+        getListOfCats()
+    }, [])
+
+    const getListOfCats = async () => {
+        let url = "http://localhost:4080/course/listofcats"
+        try {
+            const res = await axios.get(url);
+            console.log(res.data)
+            setCats(res.data)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const firstField = React.useRef()
 
     return (
         <>
+
             <header>
                 <nav>
-                    <Box mb={100} p={5}>
-                        <Flex alignItems="center">
-                            <Box h='10'><Heading>30mpd</Heading></Box >
+                    <Box backgroundColor="gray.50" mb={20} p={5} borderBottomWidth="3px" borderBottomColor="pink.500">
+                        <HStack alignItems="center" as="nav">
+                            <Box h='10' cursor='pointer' >
+                                <RouteLink to="/"><Heading>30mpd</Heading>
+                                </RouteLink>
+                            </Box >
+
                             <Button w='180px' h='10' ml={5} onClick={onOpen}><Text color="#001166" >Browse</Text></Button>
                             <Drawer size="lg" placement='left' onClose={onClose} isOpen={isOpen}>
                                 <DrawerOverlay />
@@ -38,14 +64,27 @@ export default function Banner() {
                                     <DrawerHeader borderBottomWidth='1px'>Category</DrawerHeader>
                                     <DrawerBody>
                                         <Stack direction="column">
-                                            <Link>Web Developmnet</Link>
-                                            <Link>Data Science</Link>
+                                            {cats.map((cat, idx) => {
+                                                return <RouteLink to={`/browse/${cat}`}>
+                                                    <Link key={idx} onClick={onClose}>{cat}</Link>
+                                                </RouteLink>
+                                            })}
                                         </Stack>
                                     </DrawerBody>
+                                    <Center mb="20">
+                                        <DrawerFooter>
+                                            <RouteLink to={`/browse/all`}>
+                                                <Button onClick={onClose} size='lg'>Browse All</Button>
+                                            </RouteLink>
+                                        </DrawerFooter>
+                                    </Center>
                                 </DrawerContent>
                             </Drawer>
                             <Spacer />
-                            <Input w='350px' h='10' bg='gray.100' placeholder='Search' />
+                            <InputGroup w='20%' h='10' bg='gray.100' >
+                                <InputLeftElement pointerEvents='none' children={<BsSearch color='gray.300' />} />
+                                <Input placeholder='Search' />
+                            </InputGroup>
                             <Spacer />
                             <Button w='180px' h='10' mr={5}><Text color="#001166">Want to Teach?</Text></Button>
                             <Menu >
@@ -64,7 +103,7 @@ export default function Banner() {
                                     </MenuGroup>
                                 </MenuList>
                             </Menu>
-                        </Flex>
+                        </HStack>
                     </Box>
                 </nav>
             </header >
