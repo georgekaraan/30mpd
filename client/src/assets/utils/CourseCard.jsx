@@ -4,7 +4,7 @@ import { FaRegStar } from 'react-icons/fa'
 
 export default function CourseCard({ course, idx }) {
     return (
-        <Box cursor='pointer' maxW='sm' key={idx} h="400px" borderWidth='1px' borderRadius='lg' overflow='hidden'>
+        <Box onClick={() => console.log('hi')} cursor='pointer' maxW='sm' key={idx} h="400px" borderWidth='1px' borderRadius='lg' overflow='hidden'>
             <Image src={course.thumbnail} alt="DS image" />
             <Box p='6'>
                 <Box display='flex' alignItems='baseline'>

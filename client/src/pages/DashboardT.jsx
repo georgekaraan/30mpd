@@ -2,12 +2,12 @@ import React from 'react'
 import { Box, Heading } from '@chakra-ui/react'
 
 
-function DashboardL() {
+function DashboardT() {
     return (
         <>
-            <Box><Heading>DASHBOARD</Heading></Box>
+            <Box><Heading>TEACHER DASHBOARD</Heading></Box>
         </>
     )
 }
 
-export default DashboardL
+export default DashboardT

@@ -4,10 +4,11 @@ import controller from '../Controllers/UserController.js';
 const router = Router()
 
 
-router.get('/read', controller.read)
-// router.post('/add', add)
-// router.post('/delete', controller.delete)
-// router.post('/update', controller.update)
-// router.get('/:product', controller.singleProduct)
+router.post('/getdata', controller.getdata);
+router.post('/update', controller.update);
+router.post('/register', controller.register);
+router.post('/login', controller.login);
+router.post('/verify_token', controller.verify_token);
+
 
 export default router;

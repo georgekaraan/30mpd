@@ -11,88 +11,156 @@ import {
     Text,
     Center, Divider, Link
 } from '@chakra-ui/react'
-import { useState, useEffect } from 'react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { isLoggedIn } from '../assets/utils/state';
+import { URL } from '../assets/utils/config';
+import axios from 'axios'
+import * as jose from 'jose'
+import { useToast } from '@chakra-ui/react';
+import { usersMode, userData, userEmail } from '../assets/utils/state';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 
 
-export default function LogIn() {
 
-    const [user, setUser] = useState('')
 
-    // const handleSubmit = () => {}
+export default function LogIn({ login }) {
 
-    useEffect(() => setUser(''), [])
-    const setLoggedIn = useSetRecoilState(isLoggedIn)
 
-    let navigate = useNavigate()
+    const [userMode, setUsersMode] = useRecoilState(usersMode)
 
-    const logIn = () => {
+    const setUserData = useSetRecoilState(userData)
+    const setUserEmail = useSetRecoilState(userEmail)
+    const [form, setValues] = useState({
+        email: "",
+        password: "",
+    });
+    const [message, setMessage] = useState('');
 
-        setLoggedIn(true);
-        navigate('/')
+    const navigate = useNavigate()
+    const toast = useToast();
+
+    const handleChange = (e) => {
+        setValues({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(`${URL}/user/login`, {
+                email: form.email.toLowerCase(),
+                password: form.password,
+            });
+            setMessage(response.data.message);
+            if (response.data.ok) {
+                let decodedToken = jose.decodeJwt(response.data.token)
+                console.log("Email extracted from the JWT token after login: ", decodedToken.userEmail)
+
+                toast({
+                    title: 'Welcome back! You have successfully logged in.',
+                    status: 'success',
+                    isClosable: true
+                })
+
+                setTimeout(async () => {
+                    await login(response.data.token);
+                    await getUserData({ email: form.email.toLowerCase() })
+                    setUserEmail(form.email.toLowerCase())
+
+                }, 3000);
+            } else {
+                toast({
+                    title: 'Invalid !',
+                    status: 'error',
+                    isClosable: true
+                })
+            }
+        } catch (error) {
+            toast({
+                title: 'Invalid !',
+                status: 'error',
+                isClosable: true
+            })
+            console.log(error);
+        }
+    };
+
+    const getUserData = async ({ email }) => {
+        const user = await axios.post(`${URL}/user/getdata`, { email })
+        setUserData(user.data)
     }
 
     return (
         <>
-            <Grid templateColumns='1fr 1fr 1fr' gap={6} alignItems='center' justifyContent='center'>
+            <Box >
                 <Center>
                     <GridItem>
-                        <Button
-                            cursor={user === 'learner' ? 'default' : null}
-                            _hover={{ colorScheme: { md: user === 'learner' ? 'pink' : null } }}
-                            _active={{ colorScheme: { md: user === 'learner' ? 'pink' : null } }}
-                            colorScheme={user === 'learner' ? 'pink' : null}
-                            w='12em'
-                            h='12em'
-                            border='2px'
-                            borderColor="pink.500"
-                            onClick={() => setUser('learner')}
-                        >
-                            <Text>Learner</Text>
-                        </Button>
-                    </GridItem>
-                    <Divider orientation='vertical' />
-                </Center>
+                        <Tabs colorScheme="pink" borderRadius="30px" isFitted variant='enclosed'>
+                            <TabList >
+                                <Tab
+                                    fontSize="24px"
+                                    _selected={{ color: 'white', bg: 'pink.500' }}
+                                    _focus={{ color: 'white', bg: 'pink.500' }}
+                                    _hover={userMode === "learner" && { cursor: 'default', bg: 'pink.500' }}
+                                    // _active={{ color: 'white', bg: 'pink.300' }}
+                                    isSelected={{ cursor: 'pointer', color: 'white', bg: 'pink.500' }}
+                                    onClick={() => setUsersMode('learner')}
+                                    borderColor="gray.200"
+                                    bgColor="gray.100"
+                                >Student
+                                </Tab>
+                                <Tab
+                                    fontSize="24px"
+                                    _selected={{ color: 'white', bg: 'blue.500' }}
+                                    _focus={{ color: 'white', bg: 'blue.500' }}
+                                    _hover={userMode === "teacher" && { cursor: 'default', bg: 'blue.500' }}
+                                    _active={{ color: 'white', bg: 'blue.500' }}
+                                    onClick={() => setUsersMode('teacher')}
+                                    borderColor="gray.200"
+                                    bgColor="gray.100"
+                                >Teacher</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel p={0}>
+                                    <Box boxShadow='dark-lg' p='6' rounded='lg' borderRadius={0} borderBottomRadius="lg" shadow='lg' borderWidth='1px' px={100} pb={14} w="500px" maxW="500px" minWidth="340px" maxH={500}>
+                                        <Heading mt={10} textAlign="center" mb={10}>Student Login</Heading>
+                                        {/* <form onSubmit={(e) => handleSubmit(e)}> */}
+                                        <FormControl onSubmit={handleSubmit} isRequired>
+                                            <FormLabel>Email address</FormLabel >
+                                            <Input onChange={(e) => handleChange(e)} id='login_email' mb={4} type='email' name='email' />
+                                            <FormLabel>Password</FormLabel>
+                                            <Input onChange={(e) => handleChange(e)} id='login_pass' type='password' name='password' />
+                                            <Button onClick={handleSubmit} mt={8} ml="25%" w="50%">Submit</Button>
+                                        </FormControl >
+                                        <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
+                                        </Text>
+                                        {/* </form> */}
+                                    </Box >
+                                </TabPanel>
+                                <TabPanel p={0}>
+                                    <Box oxShadow='dark-lg' p='6' rounded='lg' borderRadius={0} borderBottomRadius="lg" shadow='lg' borderWidth='1px' px={100} pb={14} w="500px" minWidth="340px" maxH={500}>
+                                        <Heading mt={10} textAlign="center" mb={10}>Teacher Login</Heading>
+                                        {/* <form onSubmit={(e) => handleSubmit(e)}> */}
+                                        <FormControl onSubmit={handleSubmit} isRequired>
+                                            <FormLabel>Email address</FormLabel >
+                                            <Input onChange={(e) => handleChange(e)} id='login_email' mb={4} type='email' name='email' />
+                                            <FormLabel>Password</FormLabel>
+                                            <Input onChange={(e) => handleChange(e)} id='login_pass' type='password' name='password' />
+                                            <Button onClick={handleSubmit} mt={8} ml="25%" w="50%">Submit</Button>
+                                        </FormControl >
+                                        <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
+                                        </Text>
+                                        {/* </form> */}
+                                    </Box >
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
 
-                <Center>
-                    <GridItem>
-                        <Box borderRadius={25} shadow='lg' borderWidth='1px' p={8} pb={14} w="30%" minWidth="340px" maxH={470}>
-                            <Heading textAlign="center" mb={10}>Welcome Back!</Heading>
-                            <FormControl isRequired>
-                                <FormLabel>Email address</FormLabel >
-                                <Input id='login_email' mb={4} type='email' />
-                                <FormLabel>Password</FormLabel>
-                                <Input id='login_pass' type='password' />
-                                <Button mt={8} ml="25%" w="50%">Submit</Button>
-                            </FormControl >
-                            <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
-                            </Text>
-                        </Box >
                     </GridItem>
                 </Center>
+            </Box>
 
-                <Center>
-                    <GridItem  >
-                        <Button
-                            cursor={user === 'teacher' ? 'default' : null}
-                            _hover={{ colorScheme: { md: user === 'learner' ? 'pink' : null } }}
-                            _active={{ colorScheme: { md: user === 'learner' ? 'pink' : null } }}
-                            colorScheme={user === 'teacher' ? 'pink' : null}
-                            w='12em'
-                            h='12em'
-                            border='2px'
-                            borderColor="pink.500"
-                            onClick={() => setUser('teacher')}
-                        >
-                            <Text >Teacher</Text>
-                        </Button>
-                    </GridItem>
-                </Center>
-
-            </Grid>
         </>
     )
 }

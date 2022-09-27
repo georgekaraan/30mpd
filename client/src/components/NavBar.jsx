@@ -1,45 +1,52 @@
-import { useState, useEffect } from 'react'
 import {
     Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, Center, Stack, InputGroup,
-    InputLeftElement, useDisclosure, Link, Box, Spacer, Button, Heading, Text, Input, HStack, DrawerFooter
+    InputLeftElement, useDisclosure, Box, Spacer, Button, Heading, Text, Input, HStack, DrawerFooter,
+    Menu, MenuItem, MenuGroup, MenuDivider, MenuButton, MenuList, Modal, ModalOverlay, ModalContent, ModalHeader,
+    ModalFooter, ModalBody, ModalCloseButton, Avatar
 } from '@chakra-ui/react'
-import { useNavigate, NavLink, Link as RouteLink } from 'react-router-dom'
+import { Link as RouteLink } from 'react-router-dom'
 import { BsSearch } from "react-icons/bs";
-import axios from 'axios'
+import { useRecoilValue, useRecoilState, } from 'recoil';
+import { isLoggedIn, usersMode, userData } from '../assets/utils/state';
 
 
 
+export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
 
-export default function NavBar() {
 
-
-    const [cats, setCats] = useState([])
-
-    useEffect(() => {
-        getListOfCats()
-    }, [])
-
-    const getListOfCats = async () => {
-        let url = "http://localhost:4080/course/listofcats"
-        try {
-            const res = await axios.get(url);
-            console.log(res.data)
-            setCats(res.data)
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const userLoggedIn = useRecoilValue(isLoggedIn)
+    const [userMode, setUsersMode] = useRecoilState(usersMode)
+    const { active_subscription } = useRecoilValue(userData)
 
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const {
+        isOpen: isModalOpen,
+        onOpen: onOpenModal,
+        onClose: onCloseModal
+    } = useDisclosure()
 
-    let navigate = useNavigate()
+    // let navigate = useNavigate()
+
+    const handleRoute = (cat) => {
+        if (cat === 'courses') {
+            setFiltCats([])
+        } else {
+            setFiltCats([cat])
+        }
+        onClose()
+    }
+
+    const changeMode = (mode) => {
+        setUsersMode(mode)
+        onCloseModal()
+    }
+
     return (
         <>
 
             <header>
                 <nav>
-                    <Box backgroundColor="gray.50" mb={20} p={5} borderBottomWidth="3px" borderBottomColor="pink.500">
+                    <Box backgroundColor="gray.50" mb={20} p={5} borderBottomWidth="3px" borderBottomColor={userMode === "learner" ? "pink.500" : "blue.500"}>
                         <HStack alignItems="center" as="nav">
                             <Box h='10' cursor='pointer' >
                                 <RouteLink to="/"><Heading>30mpd</Heading>
@@ -55,7 +62,7 @@ export default function NavBar() {
                                         <Stack direction="column">
                                             {cats.map((cat, idx) => {
                                                 return <RouteLink key={idx} to={`/browse/courses${cat}`}>
-                                                    <Text key={idx} onClick={onClose}>{cat}</Text>
+                                                    <Text key={idx} onClick={() => handleRoute(cat)}>{cat}</Text>
                                                 </RouteLink>
                                             })}
                                         </Stack>
@@ -63,7 +70,7 @@ export default function NavBar() {
                                     <Center mb="20">
                                         <DrawerFooter>
                                             <RouteLink to={`/browse/courses`}>
-                                                <Button onClick={onClose} size='lg'>Browse All</Button>
+                                                <Button onClick={() => handleRoute('courses')} size='lg'>Browse All</Button>
                                             </RouteLink>
                                         </DrawerFooter>
                                     </Center>
@@ -75,12 +82,74 @@ export default function NavBar() {
                                 <Input placeholder='Search' />
                             </InputGroup>
                             <Spacer />
-                            <Button w='180px' h='10' mr={5}><Text color="#001166">Want to Teach?</Text></Button>
-                            <RouteLink to="/login">
-                                <Button colorScheme='pink' h='10'>
-                                    <Text> Log In</Text>
-                                </Button>
-                            </RouteLink>
+                            {userMode === 'learner'
+                                ? <>
+                                    <Button onClick={onOpenModal} w='180px' h='10' mr={5}><Text color="#001166">Want to Teach?</Text></Button>
+                                    <Modal isOpen={isModalOpen} onClose={onCloseModal}>
+                                        <ModalOverlay />
+                                        <ModalContent>
+                                            <ModalHeader>Switching Modes</ModalHeader>
+                                            <ModalCloseButton />
+                                            <ModalBody>
+                                                Every teacher is a student and every student is a teacher. Are you sure you want to switch to teacher mode?
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button variant='ghost' mr={3} onClick={onCloseModal}>
+                                                    Close
+                                                </Button>
+                                                <Button onClick={() => changeMode('teacher')} colorScheme='pink' >Confirm</Button>
+                                            </ModalFooter>
+                                        </ModalContent>
+                                    </Modal>
+                                </>
+                                : <>
+                                    <Button onClick={onOpenModal} w='180px' h='10' ><Text color="#001166">Want to Learn?</Text></Button>
+                                    <Modal isOpen={isModalOpen} onClose={onCloseModal}>
+                                        <ModalOverlay />
+                                        <ModalContent>
+                                            <ModalHeader>Switching Modes</ModalHeader>
+                                            <ModalCloseButton />
+                                            <ModalBody>
+                                                Every teacher is a student and every student is a teacher. Are you sure you want to switch to learner mode?
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button variant='ghost' mr={3} onClick={onCloseModal}>
+                                                    Close
+                                                </Button>
+                                                <Button onClick={() => changeMode('learner')} colorScheme='pink' >Confirm</Button>
+                                            </ModalFooter>
+                                        </ModalContent>
+                                    </Modal>
+                                </>}
+                            {!userLoggedIn ?
+                                <RouteLink to="/login">
+                                    <Button colorScheme={userMode === "learner" ? "pink" : "blue"} h='10'>
+                                        <Text> Log In</Text>
+                                    </Button>
+                                </RouteLink>
+                                : <Menu>
+                                    <MenuButton w="1px" borderRadius="100%" as={Button} colorScheme={userMode === "learner" ? "pink" : "blue"}>
+                                        <Center>
+                                            <Avatar size="sm" />
+                                        </Center>
+                                    </MenuButton>
+                                    <MenuList>
+                                        <MenuGroup title='General'>
+                                            <RouteLink to="/"><MenuItem>Dashboard</MenuItem></RouteLink>
+                                            <RouteLink to="/profile"><MenuItem>Profile</MenuItem></RouteLink>
+                                            {active_subscription
+                                                ? <RouteLink to="/subscription"><MenuItem>Subscription</MenuItem></RouteLink>
+                                                : <RouteLink to="/subscribe"><MenuItem>Subscribe Today</MenuItem></RouteLink>}
+                                            <MenuItem>Stats </MenuItem>
+                                        </MenuGroup>
+                                        <MenuDivider />
+                                        <MenuGroup title='Help'>
+                                            <MenuItem>Settings</MenuItem>
+                                            <MenuItem onClick={logout}>Log Out</MenuItem>
+                                        </MenuGroup>
+                                    </MenuList>
+                                </Menu>
+                            }
                         </HStack>
                     </Box>
                 </nav>

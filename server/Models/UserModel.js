@@ -2,8 +2,7 @@ import { Schema as _Schema, model } from 'mongoose';
 const Schema = _Schema;
 const usersSchema = new Schema({
     name: {
-        type: String,
-        required: true
+        type: String
     },
     nickname: {
         type: String
@@ -46,10 +45,17 @@ const usersSchema = new Schema({
     current_course_min: {
         type: Number
     },
+    prev_subscription: [{
+        sub_start: {
+            type: Date
+        },
+        sub_end: {
+            type: Date
+        },
+    }],
     completed_courses: [{
         courseID: {
             type: Schema.Types.ObjectId,
-            required: true,
             ref: 'courses'
         },
         course_start: {

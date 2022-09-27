@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { SimpleGrid, Box, Image, Badge, Spinner, Center, Grid, GridItem, Heading, Checkbox, HStack, VStack } from '@chakra-ui/react'
-import { FaRegStar } from 'react-icons/fa'
+import { SimpleGrid, Spinner, Center, Grid, GridItem, Heading, Checkbox, VStack } from '@chakra-ui/react'
+// import { FaRegStar } from 'react-icons/fa'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import CourseCard from '../assets/utils/CourseCard';
 
-export default function Browse() {
+export default function Browse({ cats, filtCats, setFiltCats }) {
 
     const [courses, setCourses] = useState([])
-    const [filtCats, setFiltCats] = useState([])
-    const [initialFilt, setInitialFilt] = useState('')
 
     const getCourses = async () => {
         let url = "http://localhost:4080/course/read"
@@ -32,44 +30,47 @@ export default function Browse() {
 
     useEffect(() => {
         getCourses();
-        setInitialFilt(params.cat)
+        setFiltCats(params.cat.replace('courses', ''))
+
     }, [])
 
 
-
-
     const changeFilter = (e) => {
-        setInitialFilt("")
+        // setInitialFilt("")
+        console.log('before: ', filtCats);
         let cat = e.target.value
-        if (e.target.checked) {
+        if (e.target.checked && !filtCats.includes(cat)) {
             setFiltCats([...filtCats, cat])
             navigate(location + `${cat}`)
         }
         else {
             let index = filtCats.indexOf(cat)
-            setFiltCats([...filtCats.slice(0, index), ...filtCats.slice(index + 1, filtCats.length)])
+            index === 0
+                ? setFiltCats([])
+                : setFiltCats([...filtCats.slice(0, index), ...filtCats.slice(index + 1, filtCats.length)])
             let newLoc = location.replace(cat, '');
             navigate(newLoc)
         }
-        console.log(filtCats);
+        console.log('after: ', filtCats);
     }
 
-    function renderCheckboxes(course, idx) {
 
-        let checkBoxChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={course.category} isChecked> {course.category}</Checkbox>
-        let checkBoxUnChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={course.category}> {course.category}</Checkbox>
+    function renderCheckboxes(cat, idx) {
 
-        if (initialFilt === `courses${course.category}`) {
-            setFiltCats([...filtCats, course.category])
-            return setInitialFilt('')
+        console.log('hi');
+        console.log(filtCats);
+
+        let checkBoxChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={cat} defaultChecked> {cat}</Checkbox>
+        let checkBoxUnChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={cat}> {cat}</Checkbox>
+
+        if (filtCats.includes(cat)) {
+            console.log('but why?');
+            return checkBoxChecked
         } else {
-            if (filtCats.includes(course.category)) {
-                return checkBoxChecked
-            } else {
-                return checkBoxUnChecked
-            }
-
+            return checkBoxUnChecked
         }
+
+
     }
 
 
@@ -90,7 +91,7 @@ export default function Browse() {
                         Categories
                     </Heading>
                     <VStack mt="3" alignItems='flex-start' justifyContent="center">
-                        {courses.map((course, idx) => renderCheckboxes(course, idx))}
+                        {cats.map((cat, idx) => renderCheckboxes(cat, idx))}
                     </VStack>
                     <Heading mt="10" size='md'>
                         Ratings
