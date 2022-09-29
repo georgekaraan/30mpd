@@ -107,7 +107,7 @@ function App() {
   useEffect(() => {
     user.active_subscription
       && user.current_course_ID
-      && !course.name
+      // && !course.name
       && getCurrentCourse(user.current_course_ID)
   }, [user])
 
