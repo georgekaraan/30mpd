@@ -28,7 +28,8 @@ const coursesSchema = new Schema({
             media_file: String,
             text_fie: String,
             day: Number,
-            title: String
+            title: String,
+            thumbnail: String,
         }
     ],
     category: {

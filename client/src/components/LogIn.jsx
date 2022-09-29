@@ -20,6 +20,8 @@ import * as jose from 'jose'
 import { useToast } from '@chakra-ui/react';
 import { usersMode, userData, userEmail } from '../assets/utils/state';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useForm } from 'react-hook-form';
+
 
 
 
@@ -29,7 +31,6 @@ export default function LogIn({ login }) {
 
 
     const [userMode, setUsersMode] = useRecoilState(usersMode)
-
     const setUserData = useSetRecoilState(userData)
     const setUserEmail = useSetRecoilState(userEmail)
     const [form, setValues] = useState({
@@ -38,6 +39,12 @@ export default function LogIn({ login }) {
     });
     const [message, setMessage] = useState('');
 
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
     const navigate = useNavigate()
     const toast = useToast();
 
@@ -45,7 +52,7 @@ export default function LogIn({ login }) {
         setValues({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmitBE = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post(`${URL}/user/login`, {
@@ -65,8 +72,9 @@ export default function LogIn({ login }) {
 
                 setTimeout(async () => {
                     await login(response.data.token);
-                    await getUserData({ email: form.email.toLowerCase() })
+                    const user = await getUserData({ email: form.email.toLowerCase() })
                     setUserEmail(form.email.toLowerCase())
+                    !user.name && navigate('/profile')
 
                 }, 3000);
             } else {
@@ -89,6 +97,7 @@ export default function LogIn({ login }) {
     const getUserData = async ({ email }) => {
         const user = await axios.post(`${URL}/user/getdata`, { email })
         setUserData(user.data)
+        return user.data
     }
 
     return (
@@ -126,12 +135,12 @@ export default function LogIn({ login }) {
                                     <Box boxShadow='dark-lg' p='6' rounded='lg' borderRadius={0} borderBottomRadius="lg" shadow='lg' borderWidth='1px' px={100} pb={14} w="500px" maxW="500px" minWidth="340px" maxH={500}>
                                         <Heading mt={10} textAlign="center" mb={10}>Student Login</Heading>
                                         {/* <form onSubmit={(e) => handleSubmit(e)}> */}
-                                        <FormControl onSubmit={handleSubmit} isRequired>
+                                        <FormControl onSubmit={handleSubmitBE} isRequired>
                                             <FormLabel>Email address</FormLabel >
                                             <Input onChange={(e) => handleChange(e)} id='login_email' mb={4} type='email' name='email' />
                                             <FormLabel>Password</FormLabel>
                                             <Input onChange={(e) => handleChange(e)} id='login_pass' type='password' name='password' />
-                                            <Button onClick={handleSubmit} mt={8} ml="25%" w="50%">Submit</Button>
+                                            <Button onClick={handleSubmitBE} mt={8} ml="25%" w="50%">Submit</Button>
                                         </FormControl >
                                         <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
                                         </Text>
@@ -142,12 +151,12 @@ export default function LogIn({ login }) {
                                     <Box oxShadow='dark-lg' p='6' rounded='lg' borderRadius={0} borderBottomRadius="lg" shadow='lg' borderWidth='1px' px={100} pb={14} w="500px" minWidth="340px" maxH={500}>
                                         <Heading mt={10} textAlign="center" mb={10}>Teacher Login</Heading>
                                         {/* <form onSubmit={(e) => handleSubmit(e)}> */}
-                                        <FormControl onSubmit={handleSubmit} isRequired>
+                                        <FormControl onSubmit={handleSubmitBE} isRequired>
                                             <FormLabel>Email address</FormLabel >
                                             <Input onChange={(e) => handleChange(e)} id='login_email' mb={4} type='email' name='email' />
                                             <FormLabel>Password</FormLabel>
                                             <Input onChange={(e) => handleChange(e)} id='login_pass' type='password' name='password' />
-                                            <Button onClick={handleSubmit} mt={8} ml="25%" w="50%">Submit</Button>
+                                            <Button onClick={handleSubmitBE} mt={8} ml="25%" w="50%">Submit</Button>
                                         </FormControl >
                                         <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
                                         </Text>

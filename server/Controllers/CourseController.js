@@ -71,9 +71,21 @@ class CourseController {
             res.send(course.map((el) => el["category"]))
         }
         catch (e) {
-            res.send('how?')
+            res.send(e)
         }
 
+    }
+
+    async findbyid(req, res) {
+
+        const { id } = req.body
+        try {
+            const course = await Courses.findById(id)
+            res.send(course)
+        }
+        catch (e) {
+            res.send(e)
+        }
     }
 
 

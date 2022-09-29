@@ -4,13 +4,14 @@ import { URL } from '../assets/utils/config'
 import {
     Box, Button,
     Image, FormControl, FormLabel, Grid, Select,
-    ButtonGroup, Input, Spinner,
+    ButtonGroup, Input, Spinner, Heading, Center, Container
 } from '@chakra-ui/react'
 
 import { userData } from '../assets/utils/state'
 import { useRecoilState } from 'recoil'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react';
+import BigSpinner from '../assets/utils/BigSpinner'
 
 
 // import { FaEdit, FaWindowClose, FaCheck } from 'react-icons/fa'
@@ -22,6 +23,7 @@ export default function Profile() {
 
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("");
+    const [user, setUserData] = useRecoilState(userData)
 
     const navigate = useNavigate();
     const toast = useToast();
@@ -44,30 +46,19 @@ export default function Profile() {
         catch (e) {
             console.log(e);
         }
-
-
-
     }
-
-    const [user, setUserData] = useRecoilState(userData)
 
     const handleChange = (e) => {
         setUserData({ ...user, [e.target.name]: e.target.value })
     }
 
     useEffect(() => {
-
         handleSubmit()
-        console.log('I made it');
-
     }, [url])
 
     const handleSubmit = async () => {
-
         try {
             const { data } = await axios.post(`${URL}/user/update`, user)
-            console.log(data);
-            console.log('I AM THE FINAL ONE', user);
         }
         catch (e) {
             console.log(e);
@@ -86,39 +77,41 @@ export default function Profile() {
         }, 3000)
     }
 
-
     return (
         <>
-            <Grid p="50px" gridTemplateColumns="1fr 2fr">
+            {!user.user_timezone
+                ? <BigSpinner />
+                : <Box>
+                    <Heading ml="50px">Profile</Heading>
+                    <Grid p="50px" gridTemplateColumns="1fr 2fr">
+                        <Box>
+                            <Image m="20px" borderRadius="50%" w="250px" h="auto" src={user.image} />
+                            <Input border={0} type="file" onChange={(e) => setImage(e.target.files[0])} ></Input>
+                            <Button onClick={uploadImage}>Upload</Button>
+                        </Box>
 
-                <Box>
-                    <Image m="20px" borderRadius="50%" w="250px" h="auto" src={user.image} />
-                    <Input border={0} type="file" onChange={(e) => setImage(e.target.files[0])} ></Input>
-                    <Button onClick={uploadImage}>Upload</Button>
-                </Box>
 
-
-                <Box my="100px" w="30%">
-                    <FormControl m="5" isRequired>
-                        <FormLabel>Full Name</FormLabel>
-                        <Input value={user.name} name="name" onChange={(e) => handleChange(e)} />
-                    </FormControl>
-                    <FormControl m="5">
-                        <FormLabel>Nickname</FormLabel>
-                        <Input placeholder='How do you like to be called?' value={user.nickname} onChange={handleChange} name="nickname" />
-                    </FormControl>
-                    <FormControl m="5" isRequired>
-                        <FormLabel>Timezone</FormLabel>
-                        <Select isDisabled placeholder={user.user_timezone} onChange={handleChange} name="user_timezone" />
-                    </FormControl>
-                    <ButtonGroup m="5" mt="20px">
-                        <Button>Cancel</Button>
-                        <Button onClick={saveAndExit}>Submit</Button>
-                    </ButtonGroup>
-                </Box>
-            </Grid>
-            {/* <Text>{JSON.stringify(user)}</Text> */}
-
+                        <Box mb="100px" w="30%">
+                            <FormControl m="5" isRequired>
+                                <FormLabel>Full Name</FormLabel>
+                                <Input value={user.name} name="name" onChange={(e) => handleChange(e)} />
+                            </FormControl>
+                            <FormControl m="5">
+                                <FormLabel>Nickname</FormLabel>
+                                <Input placeholder='How do you like to be called?' value={user.nickname} onChange={handleChange} name="nickname" />
+                            </FormControl>
+                            <FormControl m="5" isRequired>
+                                <FormLabel>Timezone</FormLabel>
+                                <Select isDisabled placeholder={user.user_timezone} onChange={handleChange} name="user_timezone" />
+                            </FormControl>
+                            <ButtonGroup m="5" mt="20px">
+                                <Button>Cancel</Button>
+                                <Button onClick={saveAndExit}>Submit</Button>
+                            </ButtonGroup>
+                        </Box>
+                    </Grid>
+                    {/* <Text>{JSON.stringify(user)}</Text> */}
+                </Box>}
         </>
     )
 }

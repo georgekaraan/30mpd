@@ -2,7 +2,7 @@ import { atom } from 'recoil'
 
 export const isLoggedIn = atom({
   key: 'isLoggedIn',
-  default: false,
+  default: null,
 });
 
 export const usersMode = atom({
@@ -17,5 +17,9 @@ export const userEmail = atom({
 export const userData = atom({
   key: 'userData',
   default: {},
+})
 
+export const courseData = atom({
+  key: 'courseData',
+  default: {},
 })

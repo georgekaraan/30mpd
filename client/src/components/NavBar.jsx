@@ -2,9 +2,9 @@ import {
     Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, Center, Stack, InputGroup,
     InputLeftElement, useDisclosure, Box, Spacer, Button, Heading, Text, Input, HStack, DrawerFooter,
     Menu, MenuItem, MenuGroup, MenuDivider, MenuButton, MenuList, Modal, ModalOverlay, ModalContent, ModalHeader,
-    ModalFooter, ModalBody, ModalCloseButton, Avatar
+    ModalFooter, ModalBody, ModalCloseButton, Avatar, useToast, Toast,
 } from '@chakra-ui/react'
-import { Link as RouteLink } from 'react-router-dom'
+import { Link as RouteLink, useNavigate } from 'react-router-dom'
 import { BsSearch } from "react-icons/bs";
 import { useRecoilValue, useRecoilState, } from 'recoil';
 import { isLoggedIn, usersMode, userData } from '../assets/utils/state';
@@ -17,6 +17,10 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
     const userLoggedIn = useRecoilValue(isLoggedIn)
     const [userMode, setUsersMode] = useRecoilState(usersMode)
     const { active_subscription } = useRecoilValue(userData)
+    const user = useRecoilValue(userData)
+
+    const navigate = useNavigate();
+    const toast = useToast();
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const {
@@ -24,8 +28,6 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
         onOpen: onOpenModal,
         onClose: onCloseModal
     } = useDisclosure()
-
-    // let navigate = useNavigate()
 
     const handleRoute = (cat) => {
         if (cat === 'courses') {
@@ -41,12 +43,26 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
         onCloseModal()
     }
 
+    const closeSession = async () => {
+        await logout()
+        toast({
+            title: "You've been logged out",
+            status: 'info',
+            isClosable: true
+        })
+        setTimeout(() => {
+            navigate("/")
+        }, 2000)
+
+
+    }
+
     return (
         <>
 
             <header>
                 <nav>
-                    <Box backgroundColor="gray.50" mb={20} p={5} borderBottomWidth="3px" borderBottomColor={userMode === "learner" ? "pink.500" : "blue.500"}>
+                    <Box backgroundColor="gray.50" mb={10} p={5} borderBottomWidth="3px" borderBottomColor={userMode === "learner" ? "pink.500" : "blue.500"}>
                         <HStack alignItems="center" as="nav">
                             <Box h='10' cursor='pointer' >
                                 <RouteLink to="/"><Heading>30mpd</Heading>
@@ -130,7 +146,7 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
                                 : <Menu>
                                     <MenuButton w="1px" borderRadius="100%" as={Button} colorScheme={userMode === "learner" ? "pink" : "blue"}>
                                         <Center>
-                                            <Avatar size="sm" />
+                                            <Avatar size="sm" src={user?.image} />
                                         </Center>
                                     </MenuButton>
                                     <MenuList>
@@ -145,7 +161,7 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
                                         <MenuDivider />
                                         <MenuGroup title='Help'>
                                             <MenuItem>Settings</MenuItem>
-                                            <MenuItem onClick={logout}>Log Out</MenuItem>
+                                            <MenuItem onClick={closeSession}>Log Out</MenuItem>
                                         </MenuGroup>
                                     </MenuList>
                                 </Menu>

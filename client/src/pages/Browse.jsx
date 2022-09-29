@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { SimpleGrid, Spinner, Center, Grid, GridItem, Heading, Checkbox, VStack } from '@chakra-ui/react'
+import { SimpleGrid, Center, Grid, GridItem, Heading, Checkbox, VStack } from '@chakra-ui/react'
 // import { FaRegStar } from 'react-icons/fa'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import CourseCard from '../assets/utils/CourseCard';
+import BigSpinner from '../assets/utils/BigSpinner';
 
 export default function Browse({ cats, filtCats, setFiltCats }) {
 
@@ -20,7 +21,6 @@ export default function Browse({ cats, filtCats, setFiltCats }) {
             console.log(e);
         }
     }
-
 
     const params = useParams();
     const navigate = useNavigate();
@@ -73,10 +73,6 @@ export default function Browse({ cats, filtCats, setFiltCats }) {
 
     }
 
-
-
-
-
     return (
 
         <>
@@ -99,19 +95,12 @@ export default function Browse({ cats, filtCats, setFiltCats }) {
                 </GridItem>
 
 
-                <SimpleGrid pt="10" minChildWidth='330px' spacing='10px'>
+                <SimpleGrid pr={10} pt="10" minChildWidth='330px' spacing='20px'>
                     {courses.length === 0 ?
-                        <Center>
-                            <Spinner
-                                thickness='4px'
-                                speed='0.65s'
-                                emptyColor='gray.200'
-                                color='blue.500'
-                                size='xl' />
-                        </Center> :
+                        <BigSpinner /> :
                         !filtCats.length ?
-                            courses.map((course, idx) => <CourseCard key={idx} course={course} idx={idx} />)
-                            : courses.filter((item) => filtCats.includes(item.category)).map((course, idx) => <CourseCard key={idx} course={course} idx={idx} />)
+                            courses.map((course, idx) => <CourseCard key={idx} course={course} idx={idx} subtitle={true} cursor="pointer" />)
+                            : courses.filter((item) => filtCats.includes(item.category)).map((course, idx) => <CourseCard key={idx} course={course} idx={idx} cursor="pointer" subtitle={true} />)
                     }
                 </SimpleGrid>
             </Grid>

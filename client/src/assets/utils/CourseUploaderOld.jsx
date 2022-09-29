@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import VideoJS from '../assets/utils/VideoJS'
+import VideoJS from './VideoJS'
 
-function CourseView() {
+function CourseUploaderOld() {
 
     const [course, setCourse] = useState([])
     const [file, setFile] = useState({ name: '' })
@@ -101,4 +101,4 @@ function CourseView() {
     )
 }
 
-export default CourseView;
+export default CourseUploaderOld;

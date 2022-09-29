@@ -5,7 +5,7 @@ import CourseCard from '../../assets/utils/CourseCard';
 import axios from 'axios'
 
 
-export default function TopRated() {
+export default function NewCourses() {
 
     const [courses, setCourses] = useState([])
     const [coursesDouble, setCoursesDouble] = useState([])
@@ -31,7 +31,7 @@ export default function TopRated() {
 
     return (
         <Box borderRadius="lg" boxShadow="md" borderWidth="1px" m="10" p="4" w="70%">
-            <Heading textAlign="center">Top Rated Courses</Heading>
+            <Heading textAlign="center">New Courses</Heading>
             <Center>
 
                 <Container

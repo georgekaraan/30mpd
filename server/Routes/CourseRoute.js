@@ -5,6 +5,7 @@ const router = Router()
 
 
 router.get('/read', controller.read)
+router.post('/findbyid', controller.findbyid)
 router.get('/listofcats', controller.listCats)
 router.post('/add', controller.addCourse)
 // router.post('/upload', controller.uploadVideo)

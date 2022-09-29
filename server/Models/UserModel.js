@@ -42,6 +42,9 @@ const usersSchema = new Schema({
     current_course_day: {
         type: Number
     },
+    current_course_day_completed: {
+        type: Boolean
+    },
     current_course_min: {
         type: Number
     },
