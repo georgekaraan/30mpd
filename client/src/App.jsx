@@ -16,6 +16,7 @@ import { URL } from './assets//utils/config'
 // import { useColorMode, Button } from '@chakra-ui/react'
 import BigSpinner from "./assets/utils/BigSpinner";
 import CourseView from "./components/Learner/CourseView";
+import Helmet from "react-helmet";
 
 
 function App() {
@@ -114,6 +115,28 @@ function App() {
 
   return (
     <div>
+      <Helmet>
+        <title>30mpd: Thirty Minutes Per Day</title>
+        <meta name="description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
+
+
+        <meta itemprop="name" content="30mpd: Thirty Minutes Per Day" />
+        <meta itemprop="description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
+        <meta itemprop="image" content='./assets/30mpd-1.png' />
+
+
+        <meta property="og:url" content="https://www.30mpd.io" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="30mpd: Thirty Minutes Per Day" />
+        <meta property="og:description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
+        <meta property="og:image" content='./assets/30mpd-1.png' />
+
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="30mpd: Thirty Minutes Per Day" />
+        <meta name="twitter:description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
+        <meta name="twitter:image" content='./assets/30mpd-1.png' />
+      </Helmet>
       <Router>
         {/* <Button onClick={toggleColorMode}></Button> */}
         <NavBar cats={cats} filtCats={filtCats} setFiltCats={setFiltCats} logout={logout} />

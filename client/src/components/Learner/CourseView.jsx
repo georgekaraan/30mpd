@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Box, Text, Image, Button, Center, GridItem, Heading } from '@chakra-ui/react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useRecoilState } from 'recoil';
 import { userData, courseData } from '../../assets/utils/state'
 import { useEffect, useState, useRef } from 'react';
@@ -13,6 +13,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 export default function CourseView() {
 
     const [course, setCourseData] = useRecoilState(courseData)
+    const [user, setUserData] = useRecoilState(userData)
     const [day, setDay] = useState()
     const [player, setPlayer] = useState(false)
     const [videoJsOptions, setVideoJsOptions] = useState({
@@ -30,43 +31,18 @@ export default function CourseView() {
 
     const params = useParams();
     const playerRef = useRef(null);
+    const navigate = useNavigate();
+    let location = useLocation();
 
     useEffect(() => {
         setDay(Number(params.day.slice(3)))
     }, [])
 
-    useEffect(() => {
-
-        // if (typeof (course) != "undefined") {
-        //     setVideoJsOptions({
-        //         ...videoJsOptions, sources: [{
-        //             src: course.media[Number(params.day.slice(3))].media_file,
-        //             type: 'video/youtube'
-        //         }]
-        //     })
-        // }
-
-        if (course.name) {
-            console.log(course);
-            console.log('Finally');
-        }
-
-    }, [course])
-
-
-
-    // const videoJsOptions = {
-    //     autoplay: false,
-    //     controls: true,
-    //     responsive: true,
-    //     fluid: true,
-    //     videoWidth: '1280',
-    //     videoHeight: '720',
-    //     sources: [{
-    //         src: course?.media[day]?.media_file,
-    //         type: 'video/youtube'
-    //     }]
-    // };
+    // useEffect(() => {
+    //     if (day > user.current_course_day) {
+    //         navigate(`/course/${course.name}/${course._id}/day${day}`)
+    //     }
+    // }, [day])
 
     const handlePlayerReady = (player) => {
         playerRef.current = player;
@@ -89,29 +65,18 @@ export default function CourseView() {
 
 
     return (
-
-
         <>
-            {/* <Text>{params.id}</Text>
-            <Text>{params.name}</Text>
-            <Text>{params.day}</Text> */}
-
-            {/* {!videoJsOptions.sources.media[day].media_file === "" ? null : */}
-
             {!course.name ? <BigSpinner /> :
                 <Grid gridTemplateColumns="3fr 1fr">
                     <GridItem p="20px">
                         {day &&
-                            <Tabs defaultIndex={day - 1} isFitted variant='soft-rounded' colorScheme='pink'>
+                            <Tabs defaultIndex={day >= user.current_course_day ? user.current_course_day - 1 : day - 1} isFitted variant='soft-rounded' colorScheme='pink'>
                                 <TabList>
                                     {course?.media.map((media_day, index) => {
-
-                                        if (day === (index + 1)) {
-                                            return <Tab key={index}>Day {index + 1}</Tab>
-                                        } else if (index + 1 > day) {
+                                        if (index + 1 > user.current_course_day) {
                                             return <Tab key={index} isDisabled><p>Day {index + 1}</p></Tab>
                                         } else {
-                                            return <Tab key={index}><p>Day {index + 1}</p></Tab>
+                                            return <Tab onClick={() => navigate(`/course/${course.name}/${course._id}/day${index + 1}`)} key={index}><p>Day {index + 1}</p></Tab>
                                         }
                                     })}
                                 </TabList>

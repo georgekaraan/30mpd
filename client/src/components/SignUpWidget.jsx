@@ -8,7 +8,8 @@ import {
     Button,
     InputGroup,
     InputRightElement,
-    Select
+    Select,
+    Text
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import axios from 'axios'
@@ -17,14 +18,18 @@ import { useSetRecoilState } from 'recoil'
 import { isLoggedIn } from '../assets/utils/state'
 import { URL } from '../assets/utils/config'
 import { useToast } from '@chakra-ui/react'
+import validator from 'validator'
 
 
 export default function SignUpWidget() {
 
     const [show, setShow] = useState(false)
-    const handleClick = (e) => setShow(!show)
-
+    const [emailMsg, setEmailMsg] = useState(null)
+    const [passMsg, setPassMsg] = useState(null)
+    const [pass2Msg, setPass2Msg] = useState(null)
+    const [message, setMessage] = useState('');
     const logIn = useSetRecoilState(isLoggedIn)
+
 
     const navigate = useNavigate()
     const toast = useToast()
@@ -35,9 +40,24 @@ export default function SignUpWidget() {
         password2: "",
     });
 
-    const [message, setMessage] = useState('');
+    const handleClick = (e) => setShow(!show)
+
+
 
     const handleChange = (e) => {
+        if (e.target.name === 'email') {
+            validator.isEmail(e.target.value) ? setEmailMsg(true) : setEmailMsg(false)
+        } else if (e.target.name === 'password') {
+            validator.isStrongPassword(e.target.value, {
+                minLength: 8, minLowercase: 1,
+                minUppercase: 1, minNumbers: 1, minSymbols: 1
+            }) ? setPassMsg(true) : setPassMsg(false)
+        } else if (e.target.name === 'password2') {
+            validator.isStrongPassword(e.target.value, {
+                minLength: 8, minLowercase: 1,
+                minUppercase: 1, minNumbers: 1, minSymbols: 1
+            }) ? setPass2Msg(true) : setPass2Msg(false)
+        }
         setValues({ ...form, [e.target.name]: e.target.value });
     };
 
@@ -73,9 +93,10 @@ export default function SignUpWidget() {
             <Heading textAlign="center" mb={10}>Sign Up Today</Heading>
             <FormControl isRequired>
                 < FormLabel > Email address</FormLabel >
-                <Input onChange={handleChange} id='signup_email' mb={3} type='email' placeholder='Enter email address' name='email' />
-                <FormLabel>Password</FormLabel>
-                <InputGroup mb={3} size='md'>
+                <Input onChange={handleChange} id='signup_email' type='email' placeholder='Enter email address' name='email' />
+                {emailMsg === null || form.email === "" ? null : emailMsg === true ? <Text mt="4px" ml="7px" color="green">Vaild email !</Text> : <Text mt="4px" ml="7px" color="red">Please enter a valid email!</Text>}
+                <FormLabel mt="10px">Password</FormLabel>
+                <InputGroup size='md'>
                     <Input
                         onChange={handleChange}
                         name='password'
@@ -90,8 +111,9 @@ export default function SignUpWidget() {
                         </Button>
                     </InputRightElement>
                 </InputGroup>
-                <FormLabel>Re-type Password</FormLabel>
-                <InputGroup mb={3} size='md'>
+                {passMsg === null || form.password === "" ? null : passMsg === true ? <Text mt="4px" ml="7px" color="green">Now.. that is a strong password 💪🏻!</Text> : <Text mt="4px" ml="7px" color="red">Please enter a stronger password!</Text>}
+                <FormLabel mt="10px">Re-type Password</FormLabel>
+                <InputGroup size='md'>
                     <Input
                         onChange={handleChange}
                         name='password2'
@@ -99,6 +121,7 @@ export default function SignUpWidget() {
                         type={show ? 'text' : 'password'}
                         placeholder='Enter password'
                         id='signup_pass2'
+                        disabled={!passMsg}
                     />
                     <InputRightElement width='4.5rem'>
                         <Button h='1.75rem' size='sm' onClick={handleClick}>
@@ -106,14 +129,15 @@ export default function SignUpWidget() {
                         </Button>
                     </InputRightElement>
                 </InputGroup>
+                {passMsg ? form.password2 === "" ? null : form.password2 != form.password ? <Text mt="4px" ml="7px" color="red">PaSswOrdS dO nOt maTCh..</Text> : <Text mt="4px" ml="7px" color="green">Matching passwords 🤓</Text> : null}
 
-                <Button onClick={handleSubmit} mt={15} ml="25%" w="50%">Submit</Button>
+                <Button disabled={!emailMsg || !passMsg || !pass2Msg || form.password2 != form.password} onClick={handleSubmit} mt={15} ml="25%" w="50%">Submit</Button>
             </FormControl >
-            <Select mt={8} placeholder='How did you hear of us?'>
+            {/* <Select mt={8} placeholder='How did you hear of us?'>
                 <option value='option1'>Twitter</option>
                 <option value='option2'>Telegram</option>
                 <option value='option3'>Your Friend</option>
-            </Select>
+            </Select> */}
         </Box >
     )
 }
