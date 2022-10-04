@@ -16,8 +16,8 @@ const express = require('express'),
     mongoose = require('mongoose'),
     UserRoute = require('./Routes/UserRoute.js'),
     CourseRoute = require('./Routes/CourseRoute.js'),
-    AdminJS = require('adminjs'),
-    AdminJSExpress = require('@adminjs/express'),
+    // AdminJS = require('adminjs'),
+    // AdminJSExpress = require('@adminjs/express'),
     users = require('./Models/UserModel.js'),
     courses = require('./Models/CourseModel.js'),
     fileUpload = require('express-fileupload'),
@@ -27,8 +27,8 @@ const express = require('express'),
 
 
 
-const AdminJSMongoose = require("@adminjs/mongoose");
-AdminJS.registerAdapter(AdminJSMongoose)
+// const AdminJSMongoose = require("@adminjs/mongoose");
+// AdminJS.registerAdapter(AdminJSMongoose)
 
 // import * as dotenv from 'dotenv'
 const dotenv = require('dotenv')
@@ -56,14 +56,14 @@ async function connecting() {
 }
 connecting()
 
-const adminJS = new AdminJS({
-    resources: [courses, users],
-    rootPath: "/admin",
-});
+// const adminJS = new AdminJS({
+//     resources: [courses, users],
+//     rootPath: "/admin",
+// });
 
 
-const routerAdmin = AdminJSExpress.buildRouter(adminJS);
-app.use(adminJS.options.rootPath, routerAdmin);
+// const routerAdmin = AdminJSExpress.buildRouter(adminJS);
+// app.use(adminJS.options.rootPath, routerAdmin);
 
 //routes
 app.use(fileUpload());

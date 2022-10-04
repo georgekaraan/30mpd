@@ -12,7 +12,6 @@ export default function TopRated() {
     const [coursesDouble, setCoursesDouble] = useState([])
 
     const getCourses = async () => {
-        let url = `${URL}/course/read`
         try {
             const res = await axios.get(`${URL}/course/read`)
             console.log(res.data);
