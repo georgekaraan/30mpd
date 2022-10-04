@@ -34,6 +34,7 @@ class UserController {
     };
 
     async login(req, res) {
+        console.log(req.body);
         const { email, password } = req.body;
         if (!email || !password)
             return res.json({ ok: false, message: "All field are required" });

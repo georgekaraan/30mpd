@@ -58,7 +58,8 @@ export default function LogIn({ login }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        debugger
+        console.log(form.email);
+        console.log(form.password);
         try {
             const response = await axios.post(`${URL}/user/login`, {
                 email: form.email.toLowerCase(),
@@ -142,8 +143,10 @@ export default function LogIn({ login }) {
                                         <FormControl onSubmit={handleSubmit} isRequired>
                                             <FormLabel>Email address</FormLabel >
                                             <Input onChange={(e) => handleChange(e)} id='login_email_student' mb={4} type='email' name='email' />
+
                                             <FormLabel>Password</FormLabel>
                                             <Input onChange={(e) => handleChange(e)} id='login_pass_student' type='password' name='password' />
+
                                             <Button onClick={handleSubmit} mt={8} ml="25%" w="50%">Submit</Button>
                                         </FormControl >
                                         <Text mt={8} textAlign='center'>Don't have an account? <Link onClick={() => navigate('/signup')} color='pink.500' fontWeight='extrabold'>Sign Up!</Link>
