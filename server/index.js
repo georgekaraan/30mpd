@@ -22,10 +22,12 @@ const express = require('express'),
     courses = require('./Models/CourseModel.js'),
     fileUpload = require('express-fileupload'),
     cors = require('cors'),
-    { set, connect } = require('mongoose')
-// { json, urlencoded } = require('mongoose')
+    { set, connect } = require('mongoose'),
+    { json, urlencoded } = require('express')
 
+// app.use(express.json())
 
+// app.use(express.urlencoded())
 
 // const AdminJSMongoose = require("@adminjs/mongoose");
 // AdminJS.registerAdapter(AdminJSMongoose)
@@ -38,8 +40,8 @@ dotenv.config()
 
 set('debug', true)
 // =================== setting to use the body of a request ===================
-// app.use(json({ limit: '500mb' }));
-// app.use(urlencoded({ limit: '500mb', extended: true, parameterLimit: 1000000 }));
+app.use(json({ limit: '500mb' }));
+app.use(urlencoded({ limit: '500mb', extended: true, parameterLimit: 1000000 }));
 app.use(cors())
 
 // connecting to mongo and checking if DB is running

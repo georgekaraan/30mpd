@@ -3,8 +3,6 @@ const express = require("express"),
     controller = require('../Controllers/UserController.js')
 
 
-
-
 router.post('/getdata', controller.getdata);
 router.post('/update', controller.update);
 router.post('/register', controller.register);
