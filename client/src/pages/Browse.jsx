@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { SimpleGrid, Center, Grid, GridItem, Heading, Checkbox, VStack } from '@chakra-ui/react'
+import { SimpleGrid, Grid, GridItem, Heading, Checkbox, VStack } from '@chakra-ui/react'
 // import { FaRegStar } from 'react-icons/fa'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import CourseCard from '../assets/utils/CourseCard';
 import BigSpinner from '../assets/utils/BigSpinner';
+import { URL } from '../assets/utils/config'
 
 export default function Browse({ cats, filtCats, setFiltCats }) {
 
     const [courses, setCourses] = useState([])
 
     const getCourses = async () => {
-        let url = "http://localhost:4080/course/read"
+
         try {
-            const res = await axios.get(url)
+            const res = await axios.get(`${URL}/course/read`)
             console.log(res.data);
             setCourses(res.data)
         }
@@ -57,8 +58,6 @@ export default function Browse({ cats, filtCats, setFiltCats }) {
 
     function renderCheckboxes(cat, idx) {
 
-        console.log('hi');
-        console.log(filtCats);
 
         let checkBoxChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={cat} defaultChecked> {cat}</Checkbox>
         let checkBoxUnChecked = <Checkbox key={idx} onChange={(e) => changeFilter(e)} value={cat}> {cat}</Checkbox>
@@ -99,8 +98,8 @@ export default function Browse({ cats, filtCats, setFiltCats }) {
                     {courses.length === 0 ?
                         <BigSpinner /> :
                         !filtCats.length ?
-                            courses.map((course, idx) => <CourseCard key={idx} course={course} idx={idx} subtitle={true} cursor="pointer" />)
-                            : courses.filter((item) => filtCats.includes(item.category)).map((course, idx) => <CourseCard key={idx} course={course} idx={idx} cursor="pointer" subtitle={true} />)
+                            courses.map((course, idx) => <CourseCard key={idx} course={course} idx={idx} subtitle={true} />)
+                            : courses.filter((item) => filtCats.includes(item.category)).map((course, idx) => <CourseCard key={idx} course={course} idx={idx} subtitle={true} />)
                     }
                 </SimpleGrid>
             </Grid>

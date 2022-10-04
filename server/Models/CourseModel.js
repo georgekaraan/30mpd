@@ -1,5 +1,7 @@
-import { Schema as _Schema, model } from 'mongoose';
-const Schema = _Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
 const coursesSchema = new Schema({
     name: {
         type: String,
@@ -49,4 +51,4 @@ const coursesSchema = new Schema({
 
     { strictQuery: false })
 
-export default model('courses', coursesSchema);
+module.exports = mongoose.model('courses', coursesSchema);

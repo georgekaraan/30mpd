@@ -3,7 +3,7 @@ import { Box, Stack, Grid, Flex, Text, Divider, Center, GridItem, Heading, Link 
 
 export default function Footer() {
     return (
-        <Box mt={20} w="100%" bgColor="pink.50">
+        <Box mt={20} w="100%" bgColor="gray.100">
 
             <Stack dir='vertical' gap='1em'>
                 <Grid pt="15px" gridTemplateColumns="1fr 1fr" pr="30%" pl="30%">

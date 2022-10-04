@@ -1,8 +1,12 @@
 import React from 'react'
-import { Box, Image, Badge, Text } from '@chakra-ui/react'
+import { Box, Image, Badge } from '@chakra-ui/react'
 import { FaRegStar } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 export default function CourseCard({ course, idx, height = "400px", subtitle = false, cursor }) {
+
+    let navigate = useNavigate();
+
     return (
         <Box bgColor="gray.50" onClick={() => console.log('hi')} cursor={cursor} maxW='sm' key={idx} h={height} borderWidth='1px' borderRadius='lg' overflow='hidden' position="relative">
             <Image pointerEvents="none" src={course.thumbnail} alt="DS image"
@@ -30,6 +34,8 @@ export default function CourseCard({ course, idx, height = "400px", subtitle = f
                     as='h4'
                     lineHeight='tight'
                     noOfLines={1}
+                    cursor="pointer"
+                    onClick={() => navigate(`/course/${course.name}/${course._id}`)}
                 >
                     {course.name}
                 </Box>

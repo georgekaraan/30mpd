@@ -1,11 +1,11 @@
-import Users from '../Models/UserModel.js';
-import Courses from '../Models/CourseModel.js';
+const Users = require('../Models/UserModel.js');
+const Courses = require('../Models/CourseModel.js');
 // const ipfs = require("../Services/ipfs.service")
-import ipfsSaveFile from "../Services/ipfsSaveFile.js";
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+// import ipfsSaveFile from "../Services/ipfsSaveFile.js";
+// import { dirname } from 'path';
+// import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// const __dirname = dirname(fileURLToPath(import.meta.url));
 
 
 
@@ -42,27 +42,27 @@ class CourseController {
     }
 
     // File upload to server
-    async uploadVideo(req, res) {
+    // async uploadVideo(req, res) {
 
-        if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).send('No files were uploaded.')
-        }
+    //     if (!req.files || Object.keys(req.files).length === 0) {
+    //         return res.status(400).send('No files were uploaded.')
+    //     }
 
-        let video = req.files.file
-        let uploadPath = __dirname + '/video/' + video.name
+    //     let video = req.files.file
+    //     let uploadPath = __dirname + '/video/' + video.name
 
-        console.log(uploadPath);
+    //     console.log(uploadPath);
 
-        await video.mv(uploadPath, function (err) {
-            if (err) {
-                console.log('hello');
-                return res.status(500).send(err);
-            }
-            console.log('File uploaded!');
-        })
-        let CID = await ipfsSaveFile(uploadPath)
-        res.send(CID)
-    }
+    //     await video.mv(uploadPath, function (err) {
+    //         if (err) {
+    //             console.log('hello');
+    //             return res.status(500).send(err);
+    //         }
+    //         console.log('File uploaded!');
+    //     })
+    //     let CID = await ipfsSaveFile(uploadPath)
+    //     res.send(CID)
+    // }
 
     async listCats(req, res) {
         try {
@@ -91,4 +91,4 @@ class CourseController {
 
 }
 
-export default new CourseController();
+module.exports = new CourseController();

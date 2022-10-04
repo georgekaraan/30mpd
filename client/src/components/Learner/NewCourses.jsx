@@ -3,6 +3,7 @@ import { Heading, Center, Flex, VStack, Text, Tag, Button, Container, HStack, Bo
 import ChakraCarousel from '../ChakraCarousel'
 import CourseCard from '../../assets/utils/CourseCard';
 import axios from 'axios'
+import { URL } from '../../assets/utils/config';
 
 
 export default function NewCourses() {
@@ -11,9 +12,8 @@ export default function NewCourses() {
     const [coursesDouble, setCoursesDouble] = useState([])
 
     const getCourses = async () => {
-        let url = "http://localhost:4080/course/read"
         try {
-            const res = await axios.get(url)
+            const res = await axios.get(`${URL}/course/read`)
             console.log(res.data);
             setCourses(res.data)
         }

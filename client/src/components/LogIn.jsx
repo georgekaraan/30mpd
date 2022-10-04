@@ -58,6 +58,7 @@ export default function LogIn({ login }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        debugger
         try {
             const response = await axios.post(`${URL}/user/login`, {
                 email: form.email.toLowerCase(),

@@ -1,5 +1,7 @@
-import { Schema as _Schema, model } from 'mongoose';
-const Schema = _Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
 const usersSchema = new Schema({
     name: {
         type: String
@@ -92,4 +94,4 @@ const usersSchema = new Schema({
 
     { strictQuery: false })
 
-export default model('users', usersSchema);
+module.exports = mongoose.model('users', usersSchema);

@@ -1,8 +1,8 @@
-import Users from '../Models/UserModel.js';
-import Courses from '../Models/CourseModel.js';
-import argon2 from "argon2"; //https://github.com/ranisalt/node-argon2/wiki/Options
-import jwt from "jsonwebtoken";
-import validator from "validator";
+const Users = require('../Models/UserModel.js');
+const Courses = require('../Models/CourseModel.js');
+const argon2 = require("argon2"); //https://github.com/ranisalt/node-argon2/wiki/Options
+const jwt = require("jsonwebtoken");
+const validator = require("validator");
 
 class UserController {
 
@@ -96,4 +96,4 @@ class UserController {
 
 }
 
-export default new UserController();
+module.exports = new UserController();

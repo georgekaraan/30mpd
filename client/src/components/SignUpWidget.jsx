@@ -14,12 +14,12 @@ import {
 import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useSetRecoilState } from 'recoil'
-import { isLoggedIn } from '../assets/utils/state'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { isLoggedIn, userData, userEmail } from '../assets/utils/state'
 import { URL } from '../assets/utils/config'
 import { useToast } from '@chakra-ui/react'
 import validator from 'validator'
-
+import * as jose from 'jose'
 
 export default function SignUpWidget() {
 
@@ -28,7 +28,11 @@ export default function SignUpWidget() {
     const [passMsg, setPassMsg] = useState(null)
     const [pass2Msg, setPass2Msg] = useState(null)
     const [message, setMessage] = useState('');
-    const logIn = useSetRecoilState(isLoggedIn)
+    const [message2, setMessage2] = useState('');
+    const setIsLoggedIn = useSetRecoilState(isLoggedIn)
+    const setUserData = useSetRecoilState(userData)
+    const setUserEmail = useSetRecoilState(userEmail)
+    const loggedInnn = useRecoilValue(isLoggedIn)
 
 
     const navigate = useNavigate()
@@ -39,6 +43,7 @@ export default function SignUpWidget() {
         password: "",
         password2: "",
     });
+
 
     const handleClick = (e) => setShow(!show)
 
@@ -64,6 +69,7 @@ export default function SignUpWidget() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // user register in back end
             const response = await axios.post(`${URL}/user/register`, {
                 email: form.email.toLowerCase(),
                 password: form.password,
@@ -76,17 +82,49 @@ export default function SignUpWidget() {
                     status: 'success',
                     isClosable: true,
                 })
-                setTimeout(() => {
-                    logIn(true)
+                // log in user and generate token
+                const response2 = await axios.post(`${URL}/user/login`, {
+                    email: form.email.toLowerCase(),
+                    password: form.password,
+                });
+                console.log(response2);
+                setMessage2(response2.data.message);
+                if (response2.data.ok) {
+                    let decodedToken = jose.decodeJwt(response2.data.token)
+                    console.log('I am the:', decodedToken);
+                    console.log("Email extracted from the JWT token after login: ", decodedToken.email)
+                    localStorage.setItem("token", JSON.stringify(response2.data.token));
+                    setIsLoggedIn(true);
 
-                    navigate("/");
-                }, 3500);
+                    setTimeout(async () => {
+                        const user = await getUserData({ email: form.email.toLowerCase() })
+                        setUserEmail(form.email.toLowerCase())
+                        !user.name && navigate('/profile')
+                    }, 3000);
+
+
+                }
             }
-        } catch (error) {
-            console.log(error);
         }
+        catch (e) {
+            toast({
+                title: 'Invalid! Something went wrong. Please try again.',
+                status: 'error',
+                isClosable: true
+            })
+            console.log(e);
+        }
+
+
+
+
     };
 
+    const getUserData = async ({ email }) => {
+        const user = await axios.post(`${URL}/user/getdata`, { email })
+        setUserData(user.data)
+        return user.data
+    }
 
     return (
         <Box borderRadius={25} shadow='lg' borderWidth='1px' p={8} pb={14} w="30%" minWidth="320px" maxH={520}>
@@ -129,9 +167,9 @@ export default function SignUpWidget() {
                         </Button>
                     </InputRightElement>
                 </InputGroup>
-                {passMsg ? form.password2 === "" ? null : form.password2 != form.password ? <Text mt="4px" ml="7px" color="red">PaSswOrdS dO nOt maTCh..</Text> : <Text mt="4px" ml="7px" color="green">Matching passwords 🤓</Text> : null}
+                {passMsg ? form.password2 === "" ? null : form.password2 !== form.password ? <Text mt="4px" ml="7px" color="red">PaSswOrdS dO nOt maTCh..</Text> : <Text mt="4px" ml="7px" color="green">Matching passwords 🤓</Text> : null}
 
-                <Button disabled={!emailMsg || !passMsg || !pass2Msg || form.password2 != form.password} onClick={handleSubmit} mt={15} ml="25%" w="50%">Submit</Button>
+                <Button disabled={!emailMsg || !passMsg || !pass2Msg || form.password2 !== form.password} onClick={handleSubmit} mt={15} ml="25%" w="50%">Submit</Button>
             </FormControl >
             {/* <Select mt={8} placeholder='How did you hear of us?'>
                 <option value='option1'>Twitter</option>

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, Link as RouteLink, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Home from './components/Home';
 import NavBar from './components/NavBar';
 import SignUp from './pages/SignUp';
@@ -12,17 +12,22 @@ import DashboardT from "./pages/DashboardT";
 import Profile from "./pages/Profile";
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { URL } from './assets//utils/config'
+import { URL } from './assets/utils/config'
 // import { useColorMode, Button } from '@chakra-ui/react'
 import BigSpinner from "./assets/utils/BigSpinner";
 import CourseView from "./components/Learner/CourseView";
 import Helmet from "react-helmet";
+import Subscribe from "./components/Learner/Subscribe";
+import SubscribeSuccess from "./components/Learner/SubscribeSuccess";
+import CoursePage from "./pages/CoursePage";
+
 
 
 function App() {
 
   // const { colorMode, toggleColorMode } = useColorMode();
 
+  console.log(URL);
 
   const [userLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedIn);
   const userMode = useRecoilValue(usersMode)
@@ -72,9 +77,8 @@ function App() {
   }, [])
 
   const getListOfCats = async () => {
-    let url = "http://localhost:4080/course/listofcats"
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(`${URL}/course/listofcats`);
       setCats(res.data)
 
     } catch (error) {
@@ -122,31 +126,42 @@ function App() {
 
         <meta itemprop="name" content="30mpd: Thirty Minutes Per Day" />
         <meta itemprop="description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
-        <meta itemprop="image" content='./assets/30mpd-1.png' />
+        <meta itemprop="image" content='./assets/logo/30mpd_logo.png' />
 
 
         <meta property="og:url" content="https://www.30mpd.io" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="30mpd: Thirty Minutes Per Day" />
         <meta property="og:description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
-        <meta property="og:image" content='./assets/30mpd-1.png' />
+        <meta property="og:image" content='./assets/logo/30mpd_logo.png' />
 
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="30mpd: Thirty Minutes Per Day" />
         <meta name="twitter:description" content="A learning platform designed to get you over the finish line. Whether it is learning a new programming language or sharpening an old skill, 30mpd will help you commit and succeed." />
-        <meta name="twitter:image" content='./assets/30mpd-1.png' />
+        <meta name="twitter:image" content='./assets/logo/30mpd_logo.png' />
       </Helmet>
+
+
+
       <Router>
         {/* <Button onClick={toggleColorMode}></Button> */}
         <NavBar cats={cats} filtCats={filtCats} setFiltCats={setFiltCats} logout={logout} />
         <Routes>
+
           <Route path="/" element={userLoggedIn === null ? <BigSpinner /> : !userLoggedIn ? <Home /> : userMode === 'learner' ? <DashboardL /> : <DashboardT />} />
+
           <Route path="/login" element={!userLoggedIn ? <LogIn login={login} token={token} /> : user?.name ? <Navigate to="/" /> : <Navigate to="/profile" />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/subscribe" element={<Subscribe />} />
+          <Route path="/subscribe/success" element={<SubscribeSuccess />} />
           <Route path="/profile" element={userLoggedIn === null ? <BigSpinner /> : userLoggedIn ? <Profile /> : <Home />} />
+
           <Route path="/browse/:cat" element={<Browse cats={cats} filtCats={filtCats} setFiltCats={setFiltCats} />} />
+
+          <Route path="/course/:name/:id" element={<CoursePage />} />
           <Route path="/course/:name/:id/:day" element={<CourseView />} />
+
         </Routes>
       </Router>
       <Footer />

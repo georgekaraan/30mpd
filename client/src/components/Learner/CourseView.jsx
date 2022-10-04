@@ -23,6 +23,8 @@ export default function CourseView() {
         fluid: true,
         videoWidth: '1280',
         videoHeight: '720',
+        poster: "",
+        // playbackRates: [0.5, 1, 1.5, 2],
         sources: [{
             src: "",
             type: 'video/youtube'
@@ -86,8 +88,8 @@ export default function CourseView() {
                                         : course.media.map((media_day, index) => {
                                             return < TabPanel key={index} >
                                                 <Box ><VideoJS options={{
-                                                    ...videoJsOptions, sources: [{
-                                                        src: course?.media[index + 1]?.media_file,
+                                                    ...videoJsOptions, poster: course?.media[index + 1]?.thumbail, sources: [{
+                                                        src: `${course?.media[index + 1]?.media_file}#t=10,20`,
                                                         type: 'video/youtube'
                                                     }]
                                                 }} onReady={handlePlayerReady} /></Box>

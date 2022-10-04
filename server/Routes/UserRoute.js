@@ -1,7 +1,8 @@
-import { Router } from 'express';
-import controller from '../Controllers/UserController.js';
+const express = require("express"),
+    router = express.Router(),
+    controller = require('../Controllers/UserController.js')
 
-const router = Router()
+
 
 
 router.post('/getdata', controller.getdata);
@@ -11,4 +12,4 @@ router.post('/login', controller.login);
 router.post('/verify_token', controller.verify_token);
 
 
-export default router;
+module.exports = router;

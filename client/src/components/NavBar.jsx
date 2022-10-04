@@ -1,14 +1,14 @@
 import {
     Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, Center, Stack, InputGroup,
-    InputLeftElement, useDisclosure, Box, Spacer, Button, Heading, Text, Input, HStack, DrawerFooter,
+    InputLeftElement, useDisclosure, Box, Spacer, Button, Text, Input, HStack, DrawerFooter,
     Menu, MenuItem, MenuGroup, MenuDivider, MenuButton, MenuList, Modal, ModalOverlay, ModalContent, ModalHeader,
-    ModalFooter, ModalBody, ModalCloseButton, Avatar, useToast, Toast, Image,
+    ModalFooter, ModalBody, ModalCloseButton, Avatar, useToast, Image,
 } from '@chakra-ui/react'
 import { Link as RouteLink, useNavigate } from 'react-router-dom'
 import { BsSearch } from "react-icons/bs";
 import { useRecoilValue, useRecoilState, } from 'recoil';
 import { isLoggedIn, usersMode, userData } from '../assets/utils/state';
-import logo from '../assets/logo/30mpd-1 (8).png';
+import logo from '../assets/logo/30mpd_navbar.png';
 
 
 
@@ -67,7 +67,7 @@ export default function NavBar({ cats, filtCats, setFiltCats, logout }) {
                         <HStack alignItems="center" as="nav">
                             <Box h='10' cursor='pointer' >
                                 <RouteLink to="/">
-                                    <Image src={logo} h="20px" />
+                                    <Image src={logo} h='10' />
                                     {/* <Heading>30mpd</Heading> */}
                                 </RouteLink>
                             </Box >
